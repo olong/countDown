@@ -5,9 +5,6 @@
          body {
          font-family: 'Open Sans', sans-serif;
          }
-         #background{
-         overflow: hidden;
-         }
          #content{
          display:block;
          }
@@ -21,19 +18,9 @@
          width: 450px; 
          margin-left:100px;
          }
-         #thankyou{
-         position:relative;
-         text-align: center;
-         height: 50px;
-         margin-top:50px;
-         padding: 0;
-         overflow: hidden;
-         width: 1000px;
-         margin-left:100px;
-         }
          #windowSec, #windowMin ,#windowDay, #windowHr {
          width:   66px;
-         height:  60px;
+         height:  66px;
          z-index: 10;
          overflow: hidden;
          float:left;
@@ -85,38 +72,6 @@
          z-index: 10;
          float:left;
          }
-         .descript{
-         margin-top: 10px;
-         font-size: 20px;
-         font-family: "Open Sans";
-         }
-         .middleColon{
-         text-align: center;
-         position: fixed;
-         }
-         .question{
-         margin-top: 10px;
-         font-size: 18px;
-         font-weight:bold;
-         text-align: center;
-         font-family: "Open Sans";
-         }
-         .submitheader{
-         font-size:20px;
-         font-weight:bold;
-         font-family: "Open Sans";
-         }
-         .formdiv{
-         margin-top: 5px;
-         }
-         textarea{
-         width: 580px;
-         height: 50px;
-         border: 3px solid #999;
-         border-radius: 15px;
-         font-size:16px;
-         padding:5px 5px 5px 5px;
-         }
       </style>
    </head>
    <body>
@@ -127,6 +82,8 @@
             <h5 id ="vars"></h5> 
             <h5 id="vars2"></h5>
              <h5 id="vars3"></h5> 
+            
+             <h5 id="vars4"></h5>
              
             <div id="viewWindow" >
                <div id="windowDay" >
@@ -270,37 +227,41 @@
                  if(!lastRun) {   
                      lastRun = new Date().getTime();   //返回第一次当前距 1970 年 1 月 1 日之间的毫秒数。 
                      oldTime = lastRun;
-                     currentSec = Math.floor(lastRun/1000);  //毫秒数变为秒
+                     currentSec = Math.floor(lastRun/1000);  //毫秒数变为秒  = lastRun
                      requestAnimFrame(gameLoop);   
                      init = 1;
                      return;
                  }
                  
+                 // 
                  var delta = (new Date().getTime() - oldTime)/1000;   //the second difference ( since the last time the tab is activated)
+                 
+                 //再算一遍时间
                  lastRun = new Date().getTime(); // 再次激活Tab时当前的距 1970 年 1 月 1 日之间的毫秒数。 
                  secondDiff = lastRun - startTime;  // the second difference ( since the timer start)
                  tempSec = Math.floor(lastRun/1000);//变为秒  
-                 milliSecDiff = lastRun - tempSec*1000;  //毫秒差
+                 milliSecDiff = lastRun - tempSec*1000;  //毫秒差(1秒内)
                  
                //临时显示上面几个变量，可删除  
-               document.getElementById("vars").innerHTML= "secondDiff: "+secondDiff + " tempSec: "+tempSec + " tempSec*1000: "+tempSec*1000 + " lastRun: "+lastRun + " milliSecDiff: "+milliSecDiff  ;  
+               document.getElementById("vars").innerHTML= "secondDiff: "+ secondDiff + " currentSec: "+currentSec + " tempSec*1000: "+tempSec*1000 + " lastRun: "+lastRun + " milliSecDiff: "+milliSecDiff + " delta: "+delta ;  
 
                  
-                 timeRemain = Math.floor(countdowntotal-(secondDiff/1000));  //最后计算得出 倒计时还剩多少秒， 就是倒计时显示的时间  
+                 timeRemain = Math.floor(countdowntotal-(secondDiff/1000));  //最后计算得出 倒计时还剩多少秒， 就是倒计时显示的时间 (200天 - 已过时间)  
                  
                  //临时显示上面几个变量，可删除  
-                 document.getElementById("vars2").innerHTML="timeRemain: "+ (timeRemain/86400);
+                 document.getElementById("vars2").innerHTML="timeRemain :  "+  timeRemain +"   timeRemain (days):  "+ (timeRemain/86400);
 
                  
                  if(timeRemain<=0){ timeUP(); return;}  // If time is up, showing all 00:00:00:00
                  
-                 //初始化
+                 // normal case,  timeRamin >0
                  if(init==1){  
                      initTime=secondDiff;
                      init=0;
-                     timeRemaining(secondDiff);    // Calculate the current time to the target time.
+                     timeRemaining(secondDiff);    // Calculate the current time to the target time dayNum.
+                     
                  }
-                 if(delta>1 && tag==0){    // if there are second difference >1 second
+                 if(delta>1 && tag==0){    // if the second difference ( since the last time the tab is activated) >1 second
                      openTime = secondDiff;
                      openTime = fastrunTime + openTime;  //catch up time + second difference 
                      opensecondDiff = lastRun - startTime;   //
@@ -323,7 +284,7 @@
                      oldTime = new Date().getTime();
                      if (game_running) requestAnimFrame(gameLoop);
          
-                 }else if(delta>1) {    //非初始化时
+                 }else if(delta>1) {    //
                      if(secondDiff < openTime){
          
                          deltaDay = delta/86400000;
@@ -351,9 +312,9 @@
                      oldTime = new Date().getTime();
                      if (game_running) requestAnimFrame(gameLoop);
                  }
-             }
+             } //gameloop() end
              gameLoop();
-         }(this, this.document));
+         }(this, this.document));  
          
          
          function normalRun(secSlid,changeSec){   // Normal Run once the user is waiting on the page
@@ -587,6 +548,7 @@
              else{digitD = digit; digitU = digit - 1;}
              return [digitU,digitD];
          }
+          
          function digitHShow(digit){ // Showing correct hour and day. 
              var digitU;
              var digitD;
@@ -602,16 +564,20 @@
          
              timeRemain = Math.floor(countdowntotal-(secondDiff/1000));
          
-             dayNum = Math.floor(timeRemain/86400)+1;
+             dayNum = Math.floor(timeRemain/86400)+1; //remain days
              countDay = (dayNum +6)%60;
-             hrNum = Math.floor((timeRemain-(dayNum-1)*86400)/3600)+1;
+             hrNum = Math.floor((timeRemain-(dayNum-1)*86400)/3600)+1; //remain hours
              countHr = (hrNum +6)%24;
-             minNum = Math.floor((timeRemain-(dayNum-1)*86400-(hrNum-1)*3600)/60);
+             minNum = Math.floor((timeRemain-(dayNum-1)*86400-(hrNum-1)*3600)/60); //remain minutes
              countMin = (minNum +13)%60;
-             secNum = (timeRemain%60)+2;
+             secNum = (timeRemain%60)+2;   //remain seconds.
              countSec = (secNum+13)%60;
-         
-             if(timeRemain >= 0){
+
+        //临时显示上面几个变量，可删除  
+        document.getElementById("vars4").innerHTML="dayNum : "+ dayNum + "   countDay : "+ countDay + "   hrNum : "+ hrNum + "   countHr : "+ countHr+ "   minNum : "+ minNum+ "   countMin : "+ countMin+ "   secNum : "+ secNum+ "   countSec : "+ countSec+ "   timeRemain : "+ timeRemain; 
+
+                          
+             if(timeRemain >= 0){  //?????????????????????????
              }else{
                  timeUP();
              }
