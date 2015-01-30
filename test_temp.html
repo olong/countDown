@@ -1,0 +1,672 @@
+<html>
+   <head>
+      <style>
+         @import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,300,400,700);
+         body {
+         font-family: 'Open Sans', sans-serif;
+         }
+         #background{
+         overflow: hidden;
+         }
+         #content{
+         display:block;
+         }
+         #viewWindow{
+         position:relative;
+         text-align: center;
+         height: 50px;
+         margin-top:60px;
+         padding: 0;
+         overflow: hidden;
+         width: 450px; 
+         margin-left:100px;
+         }
+         #thankyou{
+         position:relative;
+         text-align: center;
+         height: 50px;
+         margin-top:50px;
+         padding: 0;
+         overflow: hidden;
+         width: 1000px;
+         margin-left:100px;
+         }
+         #windowSec, #windowMin ,#windowDay, #windowHr {
+         width:   66px;
+         height:  60px;
+         z-index: 10;
+         overflow: hidden;
+         float:left;
+         }
+         #windowDay{
+         width:80px;
+         }
+         #windowColon {
+         float:left;
+         z-index: 10;
+         width:20px;
+         font-size:40px;
+         color:#aaa;
+         }
+         .example_path_Sec,.example_path_Min,.example_path_Day,.example_path_Hr {
+         overflow: hidden;
+         width: 90px;
+         height: 120px;
+         }
+         .example_path_Min{ position: relative; left:3px; top:-65px;}
+         .example_path_Sec{ position: relative; left:2px; top:-65px;}
+         .example_path_Day{ position: relative; width 80px; left:3px; top:-65px;}
+         .example_path_Hr{ position: relative; left:2px; top:-65px;}
+         .example_path_Sec .example_block_Sec, .example_path_Min .example_block_Min ,.example_path_Day .example_block_Day, .example_path_Hr .example_block_Hr{
+         position: absolute;
+         width: 56px;
+         padding-top: 0px;
+         text-align: center;
+         font-weight:bold;
+         font-family:"Times", cursive, sans-serif;
+         color: #aaa;
+         font-size: 50px;
+         white-space: nowrap;
+         }
+         .example_path_Day .example_block_Day{
+         width: 30px;
+         }
+         #ticon{
+         padding: 0;
+         text-align: center;
+         overflow: hidden;
+         position:relative;
+         color: #aaa;
+         width: 450px; 
+         margin-left:80px;
+         }
+         .tmark{
+         width:   86px;
+         z-index: 10;
+         float:left;
+         }
+         .descript{
+         margin-top: 10px;
+         font-size: 20px;
+         font-family: "Open Sans";
+         }
+         .middleColon{
+         text-align: center;
+         position: fixed;
+         }
+         .question{
+         margin-top: 10px;
+         font-size: 18px;
+         font-weight:bold;
+         text-align: center;
+         font-family: "Open Sans";
+         }
+         .submitheader{
+         font-size:20px;
+         font-weight:bold;
+         font-family: "Open Sans";
+         }
+         .formdiv{
+         margin-top: 5px;
+         }
+         textarea{
+         width: 580px;
+         height: 50px;
+         border: 3px solid #999;
+         border-radius: 15px;
+         font-size:16px;
+         padding:5px 5px 5px 5px;
+         }
+      </style>
+   </head>
+   <body>
+      <div id="content">
+         <center>
+             
+            <h4 id="timer1"></h4>
+            <h5 id ="vars"></h5> 
+            <h5 id="vars2"></h5>
+             <h5 id="vars3"></h5> 
+             
+            <div id="viewWindow" >
+               <div id="windowDay" >
+                  <div id="clockDay" class="example_path_Day">
+                     <div id="blockDay" class="example_block_Day">
+                        <span id="topnoDay" style="position: relative;">59</span>
+                        <br />
+                        <span id="bottomnoDay" style="position: relative;">60</span>
+                     </div>
+                  </div>
+               </div>
+               <div id="windowColon">:</div>
+               <div id="windowHr">
+                  <div id="clockHr" class="example_path_Hr">
+                     <div id="blockHr" class="example_block_Hr">
+                        <span id="topnoHr" style="position: relative;">23</span>
+                        <br />
+                        <span id="bottomnoHr" style="position: relative;">00</span>
+                     </div>
+                  </div>
+               </div>
+               <div id="windowColon">:</div>
+               <div id="windowMin">
+                  <div id="clockMin" class="example_path_Min">
+                     <div id="blockMin" class="example_block_Min">
+                        <span id="topnoMin" style="position: relative;">50</span>
+                        <br />
+                        <span id="bottomnoMin" style="position: relative;">00</span>
+                     </div>
+                  </div>
+               </div>
+               <div id="windowColon">:</div>
+               <div id="windowSec">
+                  <div id="clockSec" class="example_path_Sec">
+                     <div id="blockSec" class="example_block_Sec">
+                        <span id="topnoSec" style="position: relative;">59</span>
+                        <br />
+                        <span id="bottomnoSec" style="position: relative;">00</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </center>
+         <center>
+            <div id="ticon">
+               <span class="tmark" >Days</span><span class="tmark">Hours</span><span class="tmark">Minutes</span><span class="tmark">Seconds</span>
+            </div>
+         </center>
+      </div>
+      <script>
+       
+         
+         (function(){
+             if((navigator.userAgent.match(/Safari/) && ! navigator.userAgent.match(/iPhone/) && ! navigator.userAgent.match(/Chrome/))) {
+                 document.getElementById("wrapper").style.display = 'block';
+             }
+         })();
+         (function(){
+             if((navigator.appVersion.indexOf("Mac")!=-1)&& navigator.userAgent.match("Firefox")) {
+                 document.getElementById("clockSec").style.top = '-48px';
+                 document.getElementById("clockMin").style.top = '-48px';
+             }
+         })();
+         
+         ////////////////////////////////////////
+         var game_running = true;
+          
+         var countdowntotal = 17280000; //200days, This is the time gap between start time to the final Time. IN this case, we set final time at July 4th. So it is 200 days.   
+          
+         var a = "12/15/2014 00:00:00";   //start date
+         var startTime = (new Date(a)).getTime();  // 返回start time距 1970 年 1 月 1 日之间的毫秒数。
+          
+        
+          //// 显示一下时间，和codes没关系
+         var  ccT = (new Date( "7/4/2015 00:00:00")).getTime(); 
+         var currentTT = new Date().getTime();  // today current time
+         var nowT =   ((ccT-currentTT)/1000)/86400;
+         document.getElementById("timer1").innerHTML= "remain Time: "+nowT;    
+         ///  
+          
+/////////////////////animation loop in a tab that’s not visible, the browser won’t keep it running http://html5online.com.cn/articles/2012081102.html
+         window.requestAnimFrame = (function(){
+             return  window.requestAnimationFrame ||
+                 window.webkitRequestAnimationFrame   ||
+                 window.mozRequestAnimationFrame      ||
+                 window.oRequestAnimationFrame        ||
+                 window.msRequestAnimationFrame       ||
+                 function(callback, element){
+                     window.setTimeout(function(){
+         
+                         callback(+new Date);
+                     }, 1000 / 60);
+                 };
+         })();
+         
+         
+         var secondUp = document.getElementById('topnoSec'),
+             secondDown = document.getElementById('bottomnoSec'),
+             minuteUp = document.getElementById('topnoMin'),
+             minuteDown = document.getElementById('bottomnoMin'),
+             hourUp = document.getElementById('topnoHr'),
+             hourDown = document.getElementById('bottomnoHr'),
+             dayUp = document.getElementById('topnoDay'),
+             dayDown = document.getElementById('bottomnoDay');
+         
+         
+         var blockSec = document.getElementById("blockSec"),
+             blockMin = document.getElementById("blockMin"),
+             blockHr = document.getElementById("blockHr"),
+             blockDay = document.getElementById("blockDay");
+         
+         var openTime;
+         var countSec = 1;
+         var countMin = 1;
+         var countHr = 1;
+         var countDay =61;
+         var changeMin = 0;
+         var changeHr = 0;
+         var changeDay = 0;
+         var oldTime;
+         var tag = 0;
+         var init = 0;
+         var cor = 0;
+         var initTime;
+         var deltaDay,
+             deltaHour;
+         
+         var fastrunTime = 3040;  //catch up time( the fast run time every time the tab is activated)
+         
+         var lastRun;
+         
+        /////////////////// main function ---------------------
+         (function(window, document){
+         
+             var currentSec = 0,
+                 tempSec = 0,
+                 secondDiff = 0,   //the second difference ( since the timer start)
+                 milliSecDiff = 0;
+         
+             function gameLoop(){
+                 if(!lastRun) {   
+                     lastRun = new Date().getTime();   //返回第一次当前距 1970 年 1 月 1 日之间的毫秒数。 
+                     oldTime = lastRun;
+                     currentSec = Math.floor(lastRun/1000);  //毫秒数变为秒
+                     requestAnimFrame(gameLoop);   
+                     init = 1;
+                     return;
+                 }
+                 
+                 var delta = (new Date().getTime() - oldTime)/1000;   //the second difference ( since the last time the tab is activated)
+                 lastRun = new Date().getTime(); // 再次激活Tab时当前的距 1970 年 1 月 1 日之间的毫秒数。 
+                 secondDiff = lastRun - startTime;  // the second difference ( since the timer start)
+                 tempSec = Math.floor(lastRun/1000);//变为秒  
+                 milliSecDiff = lastRun - tempSec*1000;  //毫秒差
+                 
+               //临时显示上面几个变量，可删除  
+               document.getElementById("vars").innerHTML= "secondDiff: "+secondDiff + " tempSec: "+tempSec + " tempSec*1000: "+tempSec*1000 + " lastRun: "+lastRun + " milliSecDiff: "+milliSecDiff  ;  
+
+                 
+                 timeRemain = Math.floor(countdowntotal-(secondDiff/1000));  //最后计算得出 倒计时还剩多少秒， 就是倒计时显示的时间  
+                 
+                 //临时显示上面几个变量，可删除  
+                 document.getElementById("vars2").innerHTML="timeRemain: "+ (timeRemain/86400);
+
+                 
+                 if(timeRemain<=0){ timeUP(); return;}  // If time is up, showing all 00:00:00:00
+                 
+                 //初始化
+                 if(init==1){  
+                     initTime=secondDiff;
+                     init=0;
+                     timeRemaining(secondDiff);    // Calculate the current time to the target time.
+                 }
+                 if(delta>1 && tag==0){    // if there are second difference >1 second
+                     openTime = secondDiff;
+                     openTime = fastrunTime + openTime;  //catch up time + second difference 
+                     opensecondDiff = lastRun - startTime;   //
+                                          
+                     opentempSec = Math.floor(lastRun/1000);
+                     openmilliSecDiff = lastRun - tempSec*1000;
+                     opencurrentSec = currentSec;
+                     tag = 1;
+                     cor = 0;
+                     timeRemaining(secondDiff);    // Calculate the current time to the target time.
+                 }
+         
+                 if(secondDiff < (initTime+fastrunTime)){  // if the second difference ( since the timer start) 小于 the second difference ( since the timer start) 加  catch up time
+         
+                     deltaDay = secondDiff/86400000;  // 计算天数 
+                     deltaHour = secondDiff/3600000;  //计算小时 
+         
+                     fastRun(milliSecDiff);     //Animate the effect of catching up. Running fast speed for seconds
+         
+                     oldTime = new Date().getTime();
+                     if (game_running) requestAnimFrame(gameLoop);
+         
+                 }else if(delta>1) {    //非初始化时
+                     if(secondDiff < openTime){
+         
+                         deltaDay = delta/86400000;
+                         deltaHour = delta/3600000;
+         
+                         fastRun(milliSecDiff);
+                         if (game_running) requestAnimFrame(gameLoop);
+                     }else{
+                         oldTime = new Date().getTime();
+                         tag=0;
+                         secondDiff = oldTime - startTime;
+                         timeCor(secondDiff);
+                         if (game_running) requestAnimFrame(gameLoop);
+         
+                     }
+         
+                 }else {
+                     if(cor==0){ timeCor(secondDiff); cor=1;}
+                     if(tempSec > currentSec) {
+                         currentSec = tempSec;
+                         normalRun(milliSecDiff,1);
+                     }else{
+                         normalRun(milliSecDiff,0);
+                     }
+                     oldTime = new Date().getTime();
+                     if (game_running) requestAnimFrame(gameLoop);
+                 }
+             }
+             gameLoop();
+         }(this, this.document));
+         
+         
+         function normalRun(secSlid,changeSec){   // Normal Run once the user is waiting on the page
+             if(changeSec == 0 && secSlid <=250){
+                 topPixel = Math.round(secSlid / 250 * 60);
+                 blockSec.style.top = topPixel+"px";
+                 blockMin.style.top = "60px";
+                 blockHr.style.top = "60px";
+                 blockDay.style.top = "60px";
+                 if(changeMin ==1){ blockMin.style.top = topPixel+"px";}
+                 if(changeHr ==1){ blockHr.style.top = topPixel+"px";}
+                 if(changeDay ==1){ blockDay.style.top = topPixel+"px";}
+             }else if(changeSec == 0 && secSlid >250){
+                 blockSec.style.top = "60px";
+                 var secDisplay = digitShow(countSec);
+                 secondUp.innerHTML = secDisplay[0];
+                 secondDown.innerHTML = secDisplay[1];
+                 blockMin.style.top = "60px";
+                 blockHr.style.top = "60px";
+                 blockDay.style.top = "60px";
+         
+                 if(changeMin ==1){
+                     blockMin.style.top = "60px";
+                     var minDisplay = digitShow(countMin);
+                     minuteUp.innerHTML = minDisplay[0];
+                     minuteDown.innerHTML = minDisplay[1];
+                     changeMin = 0;
+                 }
+                 if(changeHr ==1){
+                     blockHr.style.top = "60px";
+                     var hrDisplay = digitHShow(countHr);
+                     hourUp.innerHTML = hrDisplay[0];
+                     hourDown.innerHTML = hrDisplay[1];
+                     changeHr = 0;
+                 }
+                 if(changeDay==1){
+                     blockDay.style.top = "60px";
+                     var dayDisplay = digitShow(countDay);
+                     dayUp.innerHTML = dayDisplay[0];
+                     dayDown.innerHTML = dayDisplay[1];
+                     changeDay = 0;
+                 }
+             }else if(changeSec ==1){
+                 countSec --;
+                 if(countSec ==0){
+                     countMin --;
+                     changeMin = 1;
+                     var minDisplay = digitShow(countMin);
+                     minuteUp.innerHTML = minDisplay[0];
+                     blockMin.style.top = "0px";
+                     minuteDown.innerHTML = minDisplay[1];
+         
+                     if(countMin==0){
+                         countHr--;
+                         changeHr = 1;
+                         var hrDisplay = digitHShow(countHr);
+                         hourUp.innerHTML = hrDisplay[0];
+                         blockHr.style.top = "0px";
+                         hourDown.innerHTML = hrDisplay[1];
+         
+                         if(countHr == 0){
+                             if(countDay==0){
+                             }else{
+                                 countDay--;
+                             }
+                             changeDay = 1;
+                             var dayDisplay = digitShow(countDay);
+                             dayUp.innerHTML = dayDisplay[0];
+                             blockDay.style.top="0px";
+                             dayDown.innerHTML = dayDisplay[1];
+
+                         }
+                     }
+         
+                 }
+                 if(countSec == -1){
+                     countSec =59;
+                 }
+                 var secDisplay = digitShow(countSec);
+                 secondUp.innerHTML = secDisplay[0];
+                 blockSec.style.top = "0px";
+                 secondDown.innerHTML = secDisplay[1];
+             }
+         }
+         
+         var move1 =0, move2=0,move3=0,move4=0;   // the four stages of a digit sliding down, which means the movement should make when starts in the first 1/4.2/4,3/4 the last 1/4 of one second.
+         
+         function fastRun(secSlid){      //Animate the effect of catching up. Running fast speed for seconds
+             
+            //"the secSlid " Dividing fastrun into 4 time section is because that the catch up fastrun is designed to be 4 times as fast as normal run. And the 4 sections can better control the timer movements, and have it running smoothly.
+             
+             if( secSlid <=250){    
+                 if(move4 == 1){
+                     countMin--;countSec--;
+                     if(countSec == -1){countSec =59;}
+                     if(countMin == -1){countMin =59;}
+                     var minDisplay = digitShow(countMin);
+                     minuteUp.innerHTML = minDisplay[0];
+                     blockMin.style.top = "0px";
+                     minuteDown.innerHTML = minDisplay[1];
+                     var secDisplay = digitShow(countSec);
+                     secondUp.innerHTML = secDisplay[0];
+                     blockSec.style.top = "0px";
+                     secondDown.innerHTML = secDisplay[1];
+         
+                     if(deltaHour>2){
+                         countHr--;
+                         if(countHr == -1){countHr = 23;}
+                         var hrDisplay = digitHShow(countHr);
+                         hourUp.innerHTML = hrDisplay[0];
+                         blockHr.style.top = "0px";
+                         hourDown.innerHTML = hrDisplay[1];
+                     }
+         
+                     if(deltaDay>3){
+                         countDay--;
+                         if(countDay == -1){countDay = 59;}
+                         var dayDisplay = digitShow(countDay);
+                         dayUp.innerHTML = dayDisplay[0];
+                         blockDay.style.top = "0px";
+                         dayDown.innerHTML = dayDisplay[1];
+                     }
+         
+                 }
+                 topPixel = Math.round(secSlid / 250 * 60);
+                 blockSec.style.top = topPixel+"px";
+                 blockMin.style.top = topPixel+"px";
+                 if(deltaHour>3){blockHr.style.top = topPixel+"px";}
+                 if(deltaDay>5){blockDay.style.top = topPixel+"px";}
+                 move2=0; move3=0; move4=0;move1=1;
+             }else if(secSlid <=500 && secSlid >250){
+                 if(move1 == 1){
+                     countMin--;countSec--;
+                     if(countSec == -1){countSec =59;}
+                     if(countMin == -1){countMin =59;}
+                     var minDisplay = digitShow(countMin);
+                     minuteUp.innerHTML = minDisplay[0];
+                     blockMin.style.top = "0px";
+                     minuteDown.innerHTML = minDisplay[1];
+                     var secDisplay = digitShow(countSec);
+                     secondUp.innerHTML = secDisplay[0];
+                     blockSec.style.top = "0px";
+                     secondDown.innerHTML = secDisplay[1];
+         
+                 }
+                 secSlid = secSlid -250;
+                 topPixel = Math.round(secSlid / 250 * 60);
+                 blockSec.style.top = topPixel+"px";
+                 blockMin.style.top = topPixel+"px";
+                 //if(deltaHour>3){blockHr.style.top = topPixel+"px";}
+                 //if(deltaDay>5){blockDay.style.top = topPixel+"px";}
+                 move1 = 0; move3 =0; move4 =0;move2=1;
+         
+             }else if(secSlid <=750 && secSlid >500){
+                 if(move2 == 1){
+                     countMin--;countSec--;
+                     if(countSec == -1){countSec =59;}
+                     if(countMin == -1){countMin =59;}
+                     var minDisplay = digitShow(countMin);
+                     minuteUp.innerHTML = minDisplay[0];
+                     blockMin.style.top = "0px";
+                     minuteDown.innerHTML = minDisplay[1];
+                     var secDisplay = digitShow(countSec);
+                     secondUp.innerHTML = secDisplay[0];
+                     blockSec.style.top = "0px";
+                     secondDown.innerHTML = secDisplay[1];
+         
+                     if(deltaHour>2){
+                         countHr--;
+                         if(countHr == -1){countHr = 23;}
+                         var hrDisplay = digitHShow(countHr);
+                         hourUp.innerHTML = hrDisplay[0];
+                         blockHr.style.top = "0px";
+                         hourDown.innerHTML = hrDisplay[1];
+                     }
+         
+                     if(deltaDay>3){
+                         countDay--;
+                         if(countDay == -1){countDay = 59;}
+                         var dayDisplay = digitShow(countDay);
+                         dayUp.innerHTML = dayDisplay[0];
+                         blockDay.style.top = "0px";
+                         dayDown.innerHTML = dayDisplay[1];
+                     }
+         
+                 }
+                 secSlid =secSlid -500;
+                 topPixel = Math.round(secSlid / 250 * 60);
+                 blockSec.style.top = topPixel+"px";
+                 blockMin.style.top = topPixel+"px";
+                 if(deltaHour>3){blockHr.style.top = topPixel+"px";}
+                 if(deltaDay>5){blockDay.style.top = topPixel+"px";}
+         
+         
+                 move1=0; move2=0;move4=0;move3=1;
+         
+             }else if(secSlid >750){
+                 if(move3 == 1){
+                     countMin--;countSec--;
+                     if(countSec == -1){countSec =59;}
+                     if(countMin == -1){countMin =59;}
+                     var minDisplay = digitShow(countMin);
+                     minuteUp.innerHTML = minDisplay[0];
+                     blockMin.style.top = "0px";
+                     minuteDown.innerHTML = minDisplay[1];
+                     var secDisplay = digitShow(countSec);
+                     secondUp.innerHTML = secDisplay[0];
+                     blockSec.style.top = "0px";
+                     secondDown.innerHTML = secDisplay[1];
+
+                 }
+                 secSlid =secSlid - 750;
+                 topPixel = Math.round(secSlid / 250 * 60);
+                 blockSec.style.top = topPixel+"px";
+                 blockMin.style.top = topPixel+"px";
+                 if(deltaHour>3){blockHr.style.top = topPixel+"px";}
+         
+                 move2=0; move1=0; move3=0;move4=1;
+             }
+         }
+         
+         
+         
+         function digitShow(digit){  //Showing correct seconds and minutes. Adding zero if it is single digit
+             var digitU;
+             var digitD;
+             if(digit<0){digit = 59; digitD = digit; digitU = digit - 1;}
+             else if(digit==0){digitD = '0'+ digit; digitU = 59;}
+             else if(digit<10){digitD = '0'+ digit; digitU = '0'+(digit-1);}
+             else if(digit==10){digitD = digit; digitU = '0'+(digit-1);}
+             else{digitD = digit; digitU = digit - 1;}
+             return [digitU,digitD];
+         }
+         function digitHShow(digit){ // Showing correct hour and day. 
+             var digitU;
+             var digitD;
+             if(digit<0){digit = 23; digitD = digit; digitU = digit - 1;}
+             else if(digit==0){digitD = '0'+ digit; digitU = 23;}
+             else if(digit<10){digitD = '0'+ digit; digitU = '0'+(digit-1);}
+             else if(digit==10){digitD = digit; digitU = '0'+(digit-1);}
+             else{digitD = digit; digitU = digit - 1;}
+             return [digitU,digitD];
+         }
+         
+         function timeRemaining(secondDiff){   // Calculate the current time to the target time.
+         
+             timeRemain = Math.floor(countdowntotal-(secondDiff/1000));
+         
+             dayNum = Math.floor(timeRemain/86400)+1;
+             countDay = (dayNum +6)%60;
+             hrNum = Math.floor((timeRemain-(dayNum-1)*86400)/3600)+1;
+             countHr = (hrNum +6)%24;
+             minNum = Math.floor((timeRemain-(dayNum-1)*86400-(hrNum-1)*3600)/60);
+             countMin = (minNum +13)%60;
+             secNum = (timeRemain%60)+2;
+             countSec = (secNum+13)%60;
+         
+             if(timeRemain >= 0){
+             }else{
+                 timeUP();
+             }
+         }
+         
+         function timeCor(secondDiff){     //he function check timer time and correct it to the correct/accurate time after catchup.                       
+             timeRemaining(secondDiff);
+             minNum++;
+             countMin = minNum;
+             countSec = secNum;
+             countHr = hrNum;
+             countDay = dayNum;
+             var dayDisplay = digitShow(dayNum);
+             dayUp.innerHTML = dayDisplay[0];
+             blockDay.style.top = "0px";
+             dayDown.innerHTML = dayDisplay[1];
+             var hrDisplay = digitHShow(hrNum);
+             hourUp.innerHTML = hrDisplay[0];
+             blockHr.style.top = "0px";
+             hourDown.innerHTML = hrDisplay[1];
+             var minDisplay = digitShow(minNum);
+             minuteUp.innerHTML = minDisplay[0];
+             blockMin.style.top = "0px";
+             minuteDown.innerHTML = minDisplay[1];
+             var secDisplay = digitShow(secNum);
+             secondUp.innerHTML = secDisplay[0];
+             blockSec.style.top = "0px";
+             secondDown.innerHTML = secDisplay[1];
+         }
+         
+         function timeUP(){  // If time is up, showing all 00:00:00:00
+         
+             countDay=0;
+             countHr=0;
+             countMin=0;
+             countSec=0;
+             var minDisplay = digitShow(countMin);
+             minuteUp.innerHTML = minDisplay[0];
+             blockMin.style.top = "0px";
+             minuteDown.innerHTML = minDisplay[1];
+             var secDisplay = digitShow(countSec);
+             secondUp.innerHTML = secDisplay[0];
+             blockSec.style.top = "0px";
+             secondDown.innerHTML = secDisplay[1];
+             var hrDisplay = digitHShow(countHr);
+             hourUp.innerHTML = hrDisplay[0];
+             blockSec.style.top = "0px";
+             hourDown.innerHTML = hrDisplay[1];
+             var dayDisplay = digitShow(countDay);
+             dayUp.innerHTML = dayDisplay[0];
+             blockMin.style.top = "0px";
+             dayDown.innerHTML = dayDisplay[1];
+         
+             game_running = false;
+         }
+      </script>
+   </body>
+</html>
